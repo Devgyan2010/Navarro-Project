@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nothing But the Truth - Interactive Timeline</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: linear-gradient(to right, #141e30, #243b55);
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+        .timeline-container {
+            position: relative;
+            width: 90%;
+            margin: 100px auto;
+            padding: 20px 0;
+        }
+        .timeline {
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            position: relative;
+            gap: 20px;
+        }
+        .line {
+            position: absolute;
+            width: 95%;
+            height: 4px;
+            background: white;
+            top: 50%;
+            left: 2.5%;
+        }
+        .arrow {
+            position: absolute;
+            top: 50%;
+            font-size: 24px;
+            color: white;
+            transform: translateY(-50%);
+        }
+        .arrow-left {
+            left: 0%;
+        }
+        .arrow-right {
+            right: 0%;
+        }
+        .event {
+            position: relative;
+            cursor: pointer;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .event:nth-child(odd) {
+            transform: translateY(-70px);
+        }
+        .event:nth-child(even) {
+            transform: translateY(70px);
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            background-color: white;
+            border-radius: 50%;
+            margin: 10px 0;
+        }
+        .event:nth-child(odd) .dot {
+            order: 2;
+        }
+        .event:nth-child(even) .dot {
+            order: 1;
+        }
+        .event-button {
+            background: rgba(255, 255, 255, 0.5);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            font-weight: bold;
+            box-shadow: 2px 2px 10px rgba(255, 255, 255, 0.3);
+            position: relative;
+            min-width: 100px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-align: center;
+        }
+        .event-button:hover {
+            background: rgba(255, 255, 255, 0.8);
+            transform: scale(1.1);
+            padding: 15px 25px;
+        }
+        .event-button .description {
+            display: none;
+        }
+        .event-button:hover .date {
+            display: none;
+        }
+        .event-button:hover .description {
+            display: inline;
+        }
+        .timeline-container {
+            opacity: 0;
+            animation: fadeIn 1s ease-in forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .details {
+            display: flex;
+            margin-top: 20px;
+            font-size: 18px;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+        .details .text-container {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid white;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+        }
+        .details .image-container {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid white;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+        }
+        .details img {
+            margin-top: 10px;
+            width: 100%;
+            max-width: 300px;
+            border-radius: 8px;
+            border: 3px solid transparent;
+            animation: borderGlow 2s infinite;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes borderGlow {
+            0% {
+                border-color: #4a90e2;
+                box-shadow: 0 0 15px rgba(74, 144, 226, 0.5);
+            }
+            50% {
+                border-color: #82d8d8;
+                box-shadow: 0 0 25px rgba(130, 216, 216, 0.7);
+            }
+            100% {
+                border-color: #4a90e2;
+                box-shadow: 0 0 15px rgba(74, 144, 226, 0.5);
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Interactive Timeline - Nothing But the Truth</h1>
+    <h3>    -by Devgyan Prakash</h3>
+    <div class="timeline-container">
+        <span class="arrow arrow-left">&#9664;</span>
+        <div class="timeline">
+            <div class="line"></div>
+            <div class="event" onclick="showDetails('event1')">
+                <button class="event-button"><span class="date">March 13</span><span class="description">Philip receives a D in English</span></button>
+                <div class="dot"></div>
+            </div>
+            <div class="event" onclick="showDetails('event2')">
+                <div class="dot"></div>
+                <button class="event-button"><span class="date">March 28</span><span class="description">Philip hums during the anthem</span></button>
+            </div>
+            <div class="event" onclick="showDetails('event3')">
+                <button class="event-button"><span class="date">March 30</span><span class="description">Philip is sent to the office</span></button>
+                <div class="dot"></div>
+            </div>
+            <div class="event" onclick="showDetails('event4')">
+                <div class="dot"></div>
+                <button class="event-button"><span class="date">March 30, evening</span><span class="description">Philip's parents get involved</span></button>
+            </div>
+            <div class="event" onclick="showDetails('event5')">
+                <button class="event-button"><span class="date">April 2</span><span class="description">The media covers the story</span></button>
+                <div class="dot"></div>
+            </div>
+            <div class="event" onclick="showDetails('event6')">
+                <div class="dot"></div>
+                <button class="event-button"><span class="date">April 5</span><span class="description">Philip transfers to a new school</span></button>
+            </div>
+        </div>
+        <span class="arrow arrow-right">&#9654;</span>
+    </div>
+
+    <div id="event1" class="details"><div class="text-container">Philip always hated Ms. Narwin, calling her a boring and unfair teacher. He gets really riled up after he fails a test based on a book (Call of the Wild) and gets a D at the end of a term. Now, he can't tryout for track, and is furious.</div><div class="image-container"><img src="attached_assets/Dgrade.jpeg" alt="D Grade Image"></div></div>
+    <div id="event2" class="details"><div class="text-container">To his dissapointment, stuck in Ms. Narwin's homeroom, Philip begins to hum the national anthem as it played over the loud speaker even though the teacher reminded him that students must remain silent. Philip defiently continues against all warnings and the relationship between him and the teacher grows further apart.</div><div class="image-container"><img src="attached_assets/american-flag.gif" alt="American Flag"></div></div>
+    <div id="event3" class="details"><div class="text-container">Philip continued his behavior for two days, and got sent to the office. The second time he gets sent to Dr. Palleni he is threatened with suspension, but given a chance to redeem himself, which he declines. Dr. Palleni has no choice but to give him a two-day suspension.</div><div class="image-container"><img src="attached_assets/Principle.jpeg" alt="Principal Office Image"></div></div>
+    <div id="event4" class="details"><div class="text-container">After his mom picks him up, and once his dad comes back home, Philip explains everything in a way to make it seem his english teacher is the problam, and the school doesn't support patriots. His parents start to believe that the school is being unfair and encourages him to stand up for himself.</div><div class="image-container"><img src="attached_assets/Parent-Child.jpeg" alt="Parent and Child Image"></div></div>
+    <div id="event5" class="details"><div class="text-container">Philips dad supports Philip completely and he discusses this situation with their neighbor, Ted Griffen, who is running for school board. He has a reporter over, and asks Philip to tell her everything, and soon, the story gains popularity portraying Philip as a student who was punished for showing patriotism. This turns into a national contreversy.</div><div class="image-container"><img src="attached_assets/News.jpeg" alt="News Media Image"></div></div>
+    <div id="event6" class="details"><div class="text-container">Local news turns national, and both Ms. Narwin and Philip get lots of attention, and the nation supports Philip and put hate on Ms. Narwin. Though Philip should be happy, he finds out that many of his classmates and close friends are against him and are mad he put blame on Ms. Narwin. Eventually, his parents transfer him to Washington Academy, a private school. In a ironic turn of events, when asked to sing the national anthem for the class, he says... "I don't know the words"</div><div class="image-container"><img src="attached_assets/private-school.png" alt="Private School Image"></div></div>
+
+    <audio id="anthem" src="attached_assets/National_Anthem_-_Star_Spangled_Banner_with_percussion.mp3"></audio>
+
+    <script>
+        function showDetails(eventId) {
+            document.querySelectorAll('.details').forEach(el => {
+                if (el.id !== eventId) {
+                    el.style.opacity = '0';
+                    setTimeout(() => { el.style.display = 'none'; }, 500);
+                }
+            });
+
+            let detail = document.getElementById(eventId);
+            if (detail) {
+                detail.style.display = 'block';
+                requestAnimationFrame(() => {
+                    detail.style.opacity = '1';
+                });
+
+                if (eventId === 'event2') {
+                    const audio = document.getElementById('anthem');
+                    audio.currentTime = 3;
+                    audio.play();
+                    setTimeout(() => {
+                        audio.pause();
+                        audio.currentTime = 3;
+                    }, 5000); 
+                }
+
+                setTimeout(() => {
+                    detail.style.opacity = '0';
+                    setTimeout(() => { detail.style.display = 'none'; }, 500);
+                }, 5000);
+            }
+        }
+    </script>
+</body>
+</html>
