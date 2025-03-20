@@ -6,13 +6,22 @@
     <title>Nothing But the Truth - Interactive Timeline</title>
     <link rel="icon" type="image/png" href="america.png">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Montserrat', sans-serif;
             text-align: center;
-            background: linear-gradient(to right, #141e30, #243b55);
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
             color: white;
             margin: 0;
-            padding: 0;
+            padding: 20px 0;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         .timeline-container {
             position: relative;
@@ -76,20 +85,32 @@
             order: 1;
         }
         .event-button {
-            background: rgba(255, 255, 255, 0.5);
-            border: none;
-            padding: 10px 15px;
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 20px;
+            border-radius: 20px;
             font-size: 16px;
             cursor: pointer;
-            transition: all 0.3s ease-in-out;
-            font-weight: bold;
-            box-shadow: 2px 2px 10px rgba(255, 255, 255, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             position: relative;
-            min-width: 100px;
+            min-width: 120px;
             white-space: nowrap;
             overflow: hidden;
             text-align: center;
+            backdrop-filter: blur(5px);
+            color: white;
+        }
+        .event-button::before {
+            content: '';
+            position: absolute;
+            top: -40px; /* Increased vertical padding */
+            bottom: -40px; /* Increased vertical padding */
+            left: -10px;
+            right: -10px;
+            z-index: -1;
+            pointer-events: none; /* Prevents interaction */
         }
         .event-button:hover {
             background: rgba(255, 255, 255, 0.8);
@@ -107,7 +128,31 @@
         }
         .timeline-container {
             opacity: 0;
-            animation: fadeIn 1s ease-in forwards;
+            animation: fadeIn 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            perspective: 1000px;
+        }
+
+        .event {
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .event:hover {
+            transform: translateZ(30px) rotateX(10deg);
+        }
+
+        .event-button {
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+        }
+
+        .timeline {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
         }
 
         @keyframes fadeIn {
@@ -117,17 +162,52 @@
 
         .details {
             display: flex;
-            margin-top: 20px;
+            margin-top: 30px;
             font-size: 18px;
-            width: 100%;
-            max-width: 800px;
+            width: 90%;
+            max-width: 1000px;
             margin-left: auto;
             margin-right: auto;
             opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-            display: flex;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
             justify-content: space-between;
-            gap: 20px;
+            gap: 30px;
+            transform: translateY(40px) scale(0.95);
+            filter: blur(5px);
+            perspective: 1000px;
+        }
+
+        .details.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+        }
+
+        .details .text-container,
+        .details .image-container {
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: rotateX(-10deg);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .details.active .text-container {
+            transform: rotateX(0deg);
+            animation: slideFromLeft 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .details.active .image-container {
+            transform: rotateX(0deg);
+            animation: slideFromRight 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes slideFromLeft {
+            from { transform: translateX(-100px) rotateX(-10deg); opacity: 0; }
+            to { transform: translateX(0) rotateX(0deg); opacity: 1; }
+        }
+
+        @keyframes slideFromRight {
+            from { transform: translateX(100px) rotateX(-10deg); opacity: 0; }
+            to { transform: translateX(0) rotateX(0deg); opacity: 1; }
         }
         .details .text-container {
             flex: 1;
@@ -216,30 +296,119 @@
     <audio id="Suspended" src="youre-suspended.mp3"></audio>
     <audio id="Yapping" src="Yapping.mp3"></audio>
     <audio id="cheer" src="Cheer.mp3"></audio>
+    <audio id="bgMusic" loop></audio>
 
     <script>
-        function showDetails(eventId) {
-            document.querySelectorAll('.details').forEach(el => {
-                if (el.id !== eventId) {
-                    el.style.opacity = '0';
-                    setTimeout(() => { el.style.display = 'none'; }, 500);
+        // Background music playlist
+        const playlist = [
+            'attached_assets/cold-brew-ra-main-version-29719-02-38.mp3',
+            'attached_assets/golden-summer-lenny-b-fortune-cookie-main-version-31904-02-13.mp3',
+            'attached_assets/night-in-kyoto-avbe-main-version-21302-01-57.mp3'
+        ];
+
+        let currentTrack = Math.floor(Math.random() * playlist.length);
+        const bgMusic = document.getElementById('bgMusic');
+        bgMusic.volume = 0.3;
+
+        function playNextTrack() {
+            currentTrack = (currentTrack + 1) % playlist.length;
+            bgMusic.src = playlist[currentTrack];
+            bgMusic.play();
+        }
+
+        bgMusic.src = playlist[currentTrack];
+        bgMusic.play();
+        bgMusic.addEventListener('ended', playNextTrack);
+
+        // Fade functions
+        function fadeOut(audio, duration) {
+            const fadePoint = audio.volume;
+            const fadeInterval = 50;
+            const steps = duration / fadeInterval;
+            const volumeStep = fadePoint / steps;
+
+            const fadeOutInterval = setInterval(() => {
+                if (audio.volume > volumeStep) {
+                    audio.volume -= volumeStep;
+                } else {
+                    audio.volume = 0;
+                    clearInterval(fadeOutInterval);
                 }
+            }, fadeInterval);
+        }
+
+        function fadeIn(audio, duration) {
+            const targetVolume = 0.3;
+            const fadeInterval = 50;
+            const steps = duration / fadeInterval;
+            const volumeStep = targetVolume / steps;
+            audio.volume = 0;
+
+            const fadeInInterval = setInterval(() => {
+                if (audio.volume < targetVolume - volumeStep) {
+                    audio.volume += volumeStep;
+                } else {
+                    audio.volume = targetVolume;
+                    clearInterval(fadeInInterval);
+                }
+            }, fadeInterval);
+        }
+        function stopAllAudio() {
+            const audioElements = ['anthem', 'WompWomp', 'Suspended', 'Yapping', 'cheer'];
+            audioElements.forEach(id => {
+                const audio = document.getElementById(id);
+                audio.pause();
+                audio.currentTime = 0;
+            });
+        }
+
+        function showDetails(eventId) {
+            stopAllAudio();
+            // Hide all details first
+            document.querySelectorAll('.details').forEach(el => {
+                el.classList.remove('active');
+                el.style.display = 'none';
             });
 
             let detail = document.getElementById(eventId);
             if (detail) {
-                detail.style.display = 'block';
+                // Clear any existing hide timeouts for this detail
+                if (detail.hideTimeout) {
+                    clearTimeout(detail.hideTimeout);
+                }
+
+                detail.style.display = 'flex';
                 requestAnimationFrame(() => {
-                    detail.style.opacity = '1';
+                    detail.classList.add('active');
                 });
+
+                // Set new hide timeout
+                detail.hideTimeout = setTimeout(() => {
+                    detail.classList.remove('active');
+                    setTimeout(() => {
+                        detail.style.display = 'none';
+                        // Fade music back in if no event audio is playing
+                        if (!document.getElementById('anthem').playing &&
+                            !document.getElementById('WompWomp').playing &&
+                            !document.getElementById('Suspended').playing &&
+                            !document.getElementById('Yapping').playing &&
+                            !document.getElementById('cheer').playing) {
+                            fadeIn(bgMusic, 1000);
+                        }
+                    }, 600); // Match the CSS transition duration
+                }, 5000);
+
+                // Fade out background music
+                fadeOut(bgMusic, 1000);
 
                 if (eventId === 'event2') {
                     const audio = document.getElementById('anthem');
                     audio.currentTime = 3;
-                    audio.play();
+                    setTimeout(() => audio.play(), 1000);
                     setTimeout(() => {
                         audio.pause();
                         audio.currentTime = 3;
+                        fadeIn(bgMusic, 1000);
                     }, 5000); 
                 }
 
@@ -260,6 +429,7 @@
                     setTimeout(() => {
                         audio.pause();
                         audio.currentTime = 0;
+                        fadeIn(bgMusic, 1000);
                     }, 5000); 
                 }
 
@@ -283,11 +453,7 @@
                     }, 5000); 
                 }
 
-                setTimeout(() => {
-                    detail.style.opacity = '0';
-                    setTimeout(() => { detail.style.display = 'none'; }, 500);
-                }, 5000);
-            }
+                }
         }
     </script>
 </body>
