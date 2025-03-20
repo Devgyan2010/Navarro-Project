@@ -211,7 +211,11 @@
     <div id="event5" class="details"><div class="text-container">Philips's dad supports Philip completely and he discusses this situation with their neighbor, Ted Griffen, who is running for school board. He has a reporter over and asks Philip to tell her everything, and soon, the story gains popularity portraying Philip as a student who was punished for showing patriotism. This turns into a national controversy.</div><div class="image-container"><img src="News.jpeg" alt="News Media Image"></div></div>
     <div id="event6" class="details"><div class="text-container">Local news turns national, and both Ms. Narwin and Philip get lots of attention, and the nation supports Philip and put hate on Ms. Narwin. Though Philip should be happy, he discovers that many of his classmates and close friends are against him and are mad that he blamed Ms. Narwin. Eventually, his parents transferred him to Washington Academy, a private school. In an ironic turn of events, when asked to sing the national anthem for the class, he says... "I don't know the words"</div><div class="image-container"><img src="private-school.png" alt="Private School Image"></div></div>
 
+    <audio id="WompWomp" src="Womp_Womp.mp3"></audio>
     <audio id="anthem" src="National_Anthem_-_Star_Spangled_Banner_with_percussion.mp3"></audio>
+    <audio id="Suspended" src="youre-suspended.mp3"></audio>
+    <audio id="Yapping" src="Yapping.mp3"></audio>
+    <audio id="cheer" src="Cheer.mp3"></audio>
 
     <script>
         function showDetails(eventId) {
@@ -236,6 +240,46 @@
                     setTimeout(() => {
                         audio.pause();
                         audio.currentTime = 3;
+                    }, 5000); 
+                }
+
+                if (eventId === 'event1') {
+                    const audio = document.getElementById('WompWomp');
+                    audio.currentTime = 0;
+                    audio.play();
+                    setTimeout(() => {
+                        audio.pause();
+                        audio.currentTime = 0;
+                    }, 5000); 
+                }
+
+                if (eventId === 'event3') {
+                    const audio = document.getElementById('Suspended');
+                    audio.currentTime = 0;
+                    audio.play();
+                    setTimeout(() => {
+                        audio.pause();
+                        audio.currentTime = 0;
+                    }, 5000); 
+                }
+
+                if (eventId === 'event4') {
+                    const audio = document.getElementById('Yapping');
+                    audio.currentTime = 0;
+                    audio.play();
+                    setTimeout(() => {
+                        audio.pause();
+                        audio.currentTime = 0;
+                    }, 5000); 
+                }
+
+                if (eventId === 'event6') {
+                    const audio = document.getElementById('cheer');
+                    audio.currentTime = 1;
+                    audio.play();
+                    setTimeout(() => {
+                        audio.pause();
+                        audio.currentTime = 1;
                     }, 5000); 
                 }
 
