@@ -7,6 +7,90 @@
     <link rel="icon" type="image/png" href="america.png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+        .content {
+            position: relative;
+            opacity: 1 !important;
+        }
+        .start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 1000;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .welcome-text {
+            font-size: 32px;
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease forwards 0.5s;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .start-button {
+            padding: 25px 50px;
+            font-size: 28px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 3px solid rgba(255, 255, 255, 0.8);
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Montserrat', sans-serif;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            opacity: 0;
+            transform: scale(0.9);
+            animation: pulseIn 1s ease forwards 1s;
+        }
+        
+        @keyframes pulseIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .start-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+            box-shadow: 0 0 50px rgba(255, 255, 255, 0.4);
+            letter-spacing: 5px;
+        }
+
+        .content {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        
         body {
             font-family: 'Montserrat', sans-serif;
             text-align: center;
@@ -50,12 +134,17 @@
             font-size: 24px;
             color: white;
             transform: translateY(-50%);
+            animation: floatArrow 6s ease-in-out infinite;
         }
         .arrow-left {
             left: 0%;
         }
         .arrow-right {
             right: 0%;
+        }
+        @keyframes floatArrow {
+            0%, 100% { transform: translate(0, -50%); }
+            50% { transform: translate(0, calc(-50% - 10px)); }
         }
         .event {
             position: relative;
@@ -250,7 +339,12 @@
     </style>
 </head>
 <body>
-    <h1>Interactive Timeline - Nothing But the Truth</h1>
+    <div class="start-screen" id="startScreen">
+        <div class="welcome-text">Welcome<br>Turn up your volume and tune in</div>
+        <button class="start-button" id="startButton">Begin Journey</button>
+    </div>
+    <div class="content" id="mainContent">
+        <h1>Interactive Timeline - Nothing But the Truth</h1>
     <h3>    -by Devgyan Prakash</h3>
     <div class="timeline-container">
         <span class="arrow arrow-left">&#9664;</span>
@@ -298,7 +392,21 @@
     <audio id="cheer" src="Cheer.mp3"></audio>
     <audio id="bgMusic" loop></audio>
 
+    </div>
     <script>
+        // Start screen handling
+        document.getElementById('startButton').addEventListener('click', () => {
+            document.getElementById('startScreen').style.opacity = '0';
+            document.getElementById('mainContent').style.opacity = '1';
+            setTimeout(() => {
+                document.getElementById('startScreen').style.display = 'none';
+            }, 500);
+            
+            // Start background music
+            bgMusic.src = playlist[currentTrack];
+            bgMusic.play();
+        });
+
         // Background music playlist
         const playlist = [
             'cold-brew-ra-main-version-29719-02-38.mp3',
@@ -316,8 +424,8 @@
             bgMusic.play();
         }
 
-        bgMusic.src = playlist[currentTrack];
-        bgMusic.play();
+        
+
         bgMusic.addEventListener('ended', playNextTrack);
 
         // Fade functions
